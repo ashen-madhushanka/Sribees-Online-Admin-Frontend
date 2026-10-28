@@ -78,6 +78,8 @@ export interface AdminProduct {
     stock_quantity: number;
     weight?: number | null;
     weight_unit?: string | null;
+    display_size?: string | null;
+    display_size_unit?: string | null;
     is_active: boolean;
     is_featured: boolean;
     /** Short shelf life — the stock Quick Sale exists to clear before it spoils. */
@@ -145,6 +147,8 @@ export interface ProductPayload {
     low_stock_threshold?: number;
     weight?: number | null;
     weight_unit?: string | null;
+    display_size?: string | null;
+    display_size_unit?: string | null;
     is_active?: boolean;
     is_featured?: boolean;
     is_perishable?: boolean;

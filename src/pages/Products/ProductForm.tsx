@@ -24,6 +24,7 @@ import {
     Tooltip,
     Alert,
     InputNumber,
+    AutoComplete,
 } from 'antd';
 import { ArrowLeftOutlined, ThunderboltOutlined, StarOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -65,12 +66,230 @@ interface ProductFormValues {
     search_keywords?: string;
     weight?: number | null;
     weight_unit?: string;
+    display_size?: string;
+    display_size_unit?: string;
     is_active: boolean;
     is_featured: boolean;
     is_perishable: boolean;
     is_returnable: boolean;
     images?: GalleryImage[];
 }
+
+const displayUnitGroups = [
+  {
+    "label": "Mass",
+    "options": [
+      {
+        "value": "µg"
+      },
+      {
+        "value": "mg"
+      },
+      {
+        "value": "g"
+      },
+      {
+        "value": "kg"
+      },
+      {
+        "value": "t"
+      },
+      {
+        "value": "oz"
+      },
+      {
+        "value": "lb"
+      }
+    ]
+  },
+  {
+    "label": "Volume",
+    "options": [
+      {
+        "value": "µl"
+      },
+      {
+        "value": "ml"
+      },
+      {
+        "value": "cl"
+      },
+      {
+        "value": "dl"
+      },
+      {
+        "value": "L"
+      },
+      {
+        "value": "fl oz (US)"
+      },
+      {
+        "value": "fl oz (UK)"
+      },
+      {
+        "value": "pt (US)"
+      },
+      {
+        "value": "pt (UK)"
+      },
+      {
+        "value": "qt (US)"
+      },
+      {
+        "value": "qt (UK)"
+      },
+      {
+        "value": "gal (US)"
+      },
+      {
+        "value": "gal (UK)"
+      }
+    ]
+  },
+  {
+    "label": "Length / Dimensions",
+    "options": [
+      {
+        "value": "mm"
+      },
+      {
+        "value": "cm"
+      },
+      {
+        "value": "m"
+      },
+      {
+        "value": "km"
+      },
+      {
+        "value": "in"
+      },
+      {
+        "value": "ft"
+      },
+      {
+        "value": "yd"
+      }
+    ]
+  },
+  {
+    "label": "Area / Volume",
+    "options": [
+      {
+        "value": "cm²"
+      },
+      {
+        "value": "m²"
+      },
+      {
+        "value": "ft²"
+      },
+      {
+        "value": "cm³"
+      },
+      {
+        "value": "m³"
+      }
+    ]
+  },
+  {
+    "label": "Count / Packs",
+    "options": [
+      {
+        "value": "pc"
+      },
+      {
+        "value": "pcs"
+      },
+      {
+        "value": "pair"
+      },
+      {
+        "value": "pairs"
+      },
+      {
+        "value": "dozen"
+      },
+      {
+        "value": "pack"
+      },
+      {
+        "value": "packs"
+      },
+      {
+        "value": "bottle"
+      },
+      {
+        "value": "bottles"
+      },
+      {
+        "value": "can"
+      },
+      {
+        "value": "cans"
+      },
+      {
+        "value": "sachet"
+      },
+      {
+        "value": "sachets"
+      },
+      {
+        "value": "sheet"
+      },
+      {
+        "value": "sheets"
+      },
+      {
+        "value": "roll"
+      },
+      {
+        "value": "rolls"
+      },
+      {
+        "value": "tablet"
+      },
+      {
+        "value": "tablets"
+      },
+      {
+        "value": "capsule"
+      },
+      {
+        "value": "capsules"
+      },
+      {
+        "value": "bag"
+      },
+      {
+        "value": "bags"
+      },
+      {
+        "value": "box"
+      },
+      {
+        "value": "boxes"
+      }
+    ]
+  },
+  {
+    "label": "Other",
+    "options": [
+      {
+        "value": "months"
+      },
+      {
+        "value": "years"
+      },
+      {
+        "value": "servings"
+      },
+      {
+        "value": "loads"
+      }
+    ]
+  }
+];
 
 const ProductForm: React.FC = () => {
     const navigate = useNavigate();
@@ -138,6 +357,8 @@ const ProductForm: React.FC = () => {
                 search_keywords: product.search_keywords ?? undefined,
                 weight: product.weight !== null && product.weight !== undefined ? Number(product.weight) : undefined,
                 weight_unit: product.weight_unit || 'kg',
+                display_size: product.display_size || undefined,
+                display_size_unit: product.display_size_unit || undefined,
                 is_active: product.is_active,
                 is_featured: product.is_featured,
                 is_perishable: product.is_perishable ?? false,
@@ -248,6 +469,8 @@ const ProductForm: React.FC = () => {
                 cashback_percentage: values.cashback_percentage ?? null,
                 weight: Number(values.weight),
                 weight_unit: values.weight_unit || 'kg',
+                display_size: values.display_size?.trim() || null,
+                display_size_unit: values.display_size?.trim() ? (values.display_size_unit?.trim() || null) : null,
                 is_active: values.is_active,
                 is_featured: values.is_featured,
                 is_perishable: values.is_perishable ?? false,
@@ -701,6 +924,24 @@ const ProductForm: React.FC = () => {
                             <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: -8 }}>
                                 💡 1kg ට අඩු භාණ්ඩ සඳහා <strong>Grams (g)</strong> ද (උදා: 250g, 500g), 1kg හෝ ඊට වැඩි භාණ්ඩ සඳහා <strong>Kilograms (kg)</strong> ද (උදා: 1kg, 2.5kg) තෝරන්න.
                             </Typography.Text>
+                        </Card>
+
+                        <Card title="Display Weight / Size (Customer-facing)" style={{ marginBottom: 16 }}>
+                            <Typography.Paragraph type="secondary">
+                                Shown below the product name in the app. This does not change delivery weight or delivery charges. Leave the size blank to show nothing.
+                            </Typography.Paragraph>
+                            <Form.Item label="Weight / Size value" name="display_size"
+                                extra="Examples: 400, 1.5, 2 × 100, 30 × 40, XL, or 6–12 months."
+                                rules={[{ max: 80 }]}>
+                                <Input disabled={catalogDisabled} maxLength={80} placeholder="e.g. 400" />
+                            </Form.Item>
+                            <Form.Item label="Display unit (optional)" name="display_size_unit"
+                                extra="Choose a common unit or type any other unit. Leave blank for sizes such as XL."
+                                rules={[{ max: 32 }]}>
+                                <AutoComplete disabled={catalogDisabled} allowClear
+                                    placeholder="e.g. g, ml, pcs — or type another unit"
+                                    options={displayUnitGroups} />
+                            </Form.Item>
                         </Card>
 
                         <Card title="Pricing" style={{ marginBottom: 16 }}>
