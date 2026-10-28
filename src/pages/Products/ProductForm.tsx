@@ -33,6 +33,7 @@ import { productsApi } from '../../api/products.api';
 import type { ProductPayload } from '../../api/products.api';
 import { categoriesApi } from '../../api/categories.api';
 import ImageGalleryUpload from '../../components/products/ImageGalleryUpload';
+import DescriptionEditor from '../../components/products/DescriptionEditor';
 import type { GalleryImage } from '../../components/products/ImageGalleryUpload';
 import { useAuthStore } from '../../store/authStore';
 import { AdminRole } from '../../types/admin.types';
@@ -687,7 +688,7 @@ const ProductForm: React.FC = () => {
                                                     />
                                                 </Form.Item>
                                                 <Form.Item label="Description" name="description">
-                                                    <TextArea disabled={catalogDisabled} rows={5} placeholder="Full product description" />
+                                                    <DescriptionEditor disabled={catalogDisabled} placeholder="Full product description" />
                                                 </Form.Item>
                                             </>
                                         ),
@@ -719,7 +720,7 @@ const ProductForm: React.FC = () => {
                                                     label="Description (Sinhala)"
                                                     name="description_si"
                                                 >
-                                                    <TextArea disabled={catalogDisabled} rows={5} placeholder="සම්පූර්ණ නිෂ්පාදන විස්තරය" />
+                                                    <DescriptionEditor disabled={catalogDisabled} placeholder="සම්පූර්ණ නිෂ්පාදන විස්තරය" />
                                                 </Form.Item>
                                             </>
                                         ),
@@ -751,7 +752,7 @@ const ProductForm: React.FC = () => {
                                                     label="Description (Tamil)"
                                                     name="description_ta"
                                                 >
-                                                    <TextArea disabled={catalogDisabled} rows={5} placeholder="முழு தயாரிப்பு விவரம்" />
+                                                    <DescriptionEditor disabled={catalogDisabled} placeholder="முழு தயாரிப்பு விவரம்" />
                                                 </Form.Item>
                                             </>
                                         ),
